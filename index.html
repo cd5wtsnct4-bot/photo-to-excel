@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Extract information from a photograph and append it to an Excel workbook.">
+  <title>Photo to Excel</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="mark">PX</span><span>Photo to Excel</span></div>
+    <div class="privacy">Processed on this device</div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div>
+        <p class="eyebrow">DOCUMENT CAPTURE</p>
+        <h1>Turn a photograph into a clean spreadsheet row.</h1>
+      </div>
+      <p>Upload a receipt, invoice, label, or form. Review the extracted values, then append them to an Excel workbook.</p>
+    </section>
+
+    <section class="workspace">
+      <article class="panel capture-panel">
+        <div class="panel-heading">
+          <span class="step">1</span>
+          <div><h2>Add a photograph</h2><p>Clear, straight images give the best results.</p></div>
+        </div>
+        <label class="dropzone" id="dropzone" for="photoInput">
+          <input id="photoInput" type="file" accept="image/*" capture="environment">
+          <span class="camera" aria-hidden="true">▣</span>
+          <strong>Choose or take a photo</strong>
+          <span>JPG, PNG, HEIC where supported</span>
+        </label>
+        <div class="preview-wrap hidden" id="previewWrap">
+          <img id="preview" alt="Uploaded document preview">
+          <button class="text-button" id="replacePhoto" type="button">Replace photo</button>
+        </div>
+        <button class="primary" id="extractButton" type="button" disabled>Read photograph</button>
+        <div class="progress hidden" id="progress" aria-live="polite">
+          <div class="progress-track"><div id="progressBar"></div></div>
+          <span id="progressText">Preparing image…</span>
+        </div>
+      </article>
+
+      <article class="panel details-panel">
+        <div class="panel-heading">
+          <span class="step">2</span>
+          <div><h2>Review the information</h2><p>Correct anything the photograph did not capture clearly.</p></div>
+        </div>
+        <form id="recordForm">
+          <div class="form-grid">
+            <label>Document date<input id="documentDate" type="date"></label>
+            <label>Supplier or person<input id="supplier" type="text" placeholder="Name on document"></label>
+            <label>Document number<input id="documentNumber" type="text" placeholder="Invoice or receipt number"></label>
+            <label>Category<input id="category" type="text" placeholder="Travel, stock, utilities…"></label>
+            <label class="wide">Description<input id="description" type="text" placeholder="Short description"></label>
+            <label>Subtotal<input id="subtotal" type="number" step="0.01" inputmode="decimal"></label>
+            <label>Tax<input id="tax" type="number" step="0.01" inputmode="decimal"></label>
+            <label>Total<input id="total" type="number" step="0.01" inputmode="decimal"></label>
+            <label>Currency<input id="currency" type="text" maxlength="3" placeholder="ZAR"></label>
+            <label>Payment method<input id="paymentMethod" type="text" placeholder="Card, cash, EFT"></label>
+            <label class="wide">Notes<textarea id="notes" rows="2" placeholder="Optional notes"></textarea></label>
+          </div>
+          <details><summary>View extracted text</summary><textarea id="rawText" rows="7" aria-label="Extracted text"></textarea></details>
+        </form>
+      </article>
+    </section>
+
+    <section class="panel export-panel">
+      <div class="panel-heading">
+        <span class="step">3</span>
+        <div><h2>Append to Excel</h2><p>Start with the template or use an existing workbook created by this site.</p></div>
+      </div>
+      <div class="export-actions">
+        <label class="secondary file-button">Select existing workbook<input id="workbookInput" type="file" accept=".xlsx,.xls"></label>
+        <a class="secondary" href="photo-records-template.xlsx" download>Download blank template</a>
+        <button class="primary" id="appendButton" type="button">Add row and download Excel</button>
+      </div>
+      <p class="workbook-status" id="workbookStatus">No workbook selected. A new workbook will be created.</p>
+    </section>
+  </main>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+</body>
+</html>
